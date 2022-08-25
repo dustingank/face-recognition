@@ -7,14 +7,31 @@ import Particle from "./components/Particles";
 import "./App.css"
 
 class App extends Component {
+  constructor() {
+    super();
+    this.state = {
+      input: " ",
+      imageURL: " ",
+    }
+  }
+
+  onInputChnage = (event) => {
+    console.log(event.target.value)
+    this.setState({ input: event.target.value })
+  }
+
+  onClickSearch = () => {
+    console.log("click")
+  }
+
   render() {
     return (
       <div className="App">
         <Particle />
-        <Login></Login>
-        <Logo></Logo>
-        <Rank></Rank>
-        <ImageSubmission></ImageSubmission>
+        <Login />
+        <Logo />
+        <Rank />
+        <ImageSubmission onInputChnage={this.onInputChnage} onClickSearch={this.onClickSearch} />
         {/* <FaceRecognition></FaceRecognition> */}
 
       </div>
