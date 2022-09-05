@@ -3,10 +3,10 @@
   height: 0;
   padding-bottom: 8%;
   margin-left: 2%;
-  background-color: linear-gradient(to left, #2193b0, #6dd5ed);
+  background: linear-gradient(89deg, #FF5EDF 10%, #04C8DE 100%);
 }
 
-img {
+.logoImage {
   margin: 0;
   position: absolute;
   top: 50%;
