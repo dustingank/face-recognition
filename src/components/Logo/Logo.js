@@ -5,9 +5,9 @@ import AIImage from "./image/AI_Logo.png";
 
 const Logo = () => {
   return (
-    <div>
+    <div className='ma4 mt0'>
       <Tilt className="br2 shadow-2 imageStyle">
-        <img src={AIImage} alt="banner logo"></img>
+        <img className='logoImage' src={AIImage} alt="banner logo"></img>
       </Tilt>
     </div>
   )
