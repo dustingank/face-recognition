@@ -26,8 +26,33 @@ class App extends Component {
       imageURL: "",
       box: {},
       route: 'signin', // default starting route
-      isSignedIn: false
+      isSignedIn: false,
+      user: {
+        id: '',
+        name: '',
+        email: '',
+        entries: 0,
+        joinedDate: ''
+      }
     }
+  }
+
+  loadUser = (data) => {
+    this.setState({
+      user: {
+        id: data.id,
+        name: data.name,
+        email: data.email,
+        entries: data.entries,
+        joinedDate: data.joinedDate
+      }
+    })
+  }
+
+  componentDidMount() {
+    fetch('http://localhost:3001')
+      .then(response => response.json())
+      .then(console.log)
   }
 
   calculateFaceLocation = (response) => {
@@ -56,9 +81,23 @@ class App extends Component {
     this.setState({ imageURL: this.state.input })
     console.log(this.state.input)
     app.models.predict(Clarifai.FACE_DETECT_MODEL, this.state.input)
-      .then(response => this.displayFaceArea(this.calculateFaceLocation(response))
-        .catch(err => console.log(err))
-      )
+      .then(response => {
+        if (response) {
+          fetch('http://localhost:3001/image', {
+            method: 'put',
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify({
+              id: this.state.user.id,
+            })
+          })
+            .then(response => response.json())
+            .then(count => {
+              this.setState(Object.assign(this.state.user, { entries: count }))
+            })
+        }
+        this.displayFaceArea(this.calculateFaceLocation(response))
+      })
+      .catch(err => console.log(err))
   }
 
   onRouteChange = (route) => {
@@ -71,7 +110,7 @@ class App extends Component {
   }
 
   render() {
-    const { imageURL, box, route, isSignedIn } = this.state;
+    const { imageURL, box, route, isSignedIn, user } = this.state;
     return (
       <div className="App">
         <Particle />
@@ -80,15 +119,15 @@ class App extends Component {
           route === 'home' ?
             <Fragment>
               < Logo />
-              <Rank />
+              <Rank name={user.name} entries={user.entries} />
               <ImageSubmission onInputChnage={this.onInputChnage} onClickSearch={this.onClickSearch} />
               <FaceRecognition imageURL={imageURL} box={box} />
             </Fragment> :
             (
               route === "signin" ?
-                <Signin onRouteChange={this.onRouteChange} />
+                <Signin onRouteChange={this.onRouteChange} loadUser={this.loadUser} />
                 :
-                < Register onRouteChange={this.onRouteChange} />
+                < Register onRouteChange={this.onRouteChange} loadUser={this.loadUser} />
             )
         }
 
